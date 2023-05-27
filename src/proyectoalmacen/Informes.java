@@ -3,12 +3,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package proyectoalmacen;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.io.*;
 import javax.swing.*;
-/**
- *
- * @author Samue
- */
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.DefaultCategoryDataset;
 public class Informes extends javax.swing.JFrame {
 
     /**
@@ -30,9 +33,12 @@ public class Informes extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         Boton_Salir = new javax.swing.JButton();
         Boton_VolverMenu = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jPanel1.setBackground(new java.awt.Color(0, 153, 153));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         Boton_Salir.setText("SALIR");
@@ -51,6 +57,27 @@ public class Informes extends javax.swing.JFrame {
         });
         jPanel1.add(Boton_VolverMenu, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 20, -1, -1));
 
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 840, Short.MAX_VALUE)
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 470, Short.MAX_VALUE)
+        );
+
+        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 70, 840, 470));
+
+        jButton1.setText("EJECUTAR");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 20, -1, -1));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -64,13 +91,53 @@ public class Informes extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 580, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    void JFreeChar(){
+        int a=0,b=0,c=0;
+        try {
+            BufferedReader fr = new BufferedReader(new FileReader("Stores\\Creditos.txt"));
+            
+            a = Integer.valueOf(fr.readLine());
+            b = Integer.valueOf(fr.readLine());
+            c = Integer.valueOf(fr.readLine());
+            
+        } catch (Exception e) {
+        }
+        
+        
+        DefaultCategoryDataset datos = new DefaultCategoryDataset();
+        
+        datos.setValue(a,"Valor 1","Credito");
+        datos.setValue(b,"Valor 2","Tarjeta");
+        datos.setValue(c,"Valor 3","Contado");
+        
+        JFreeChart grafico = ChartFactory.createBarChart3D(
+        "Grafico",
+                "Numeros",
+                "Num",
+                datos,
+                PlotOrientation.VERTICAL,
+                true,
+                true,
+                false
+                
+        );
+        ChartPanel panel = new ChartPanel(grafico);
+        panel.setMouseWheelEnabled(true);
+        panel.setPreferredSize(new Dimension(1000,400));
+        
+        jPanel2.setLayout(new BorderLayout());
+        jPanel2.add(panel,BorderLayout.NORTH);
+        
+        pack();
+        repaint();
+    }
     private void Boton_SalirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Boton_SalirMouseClicked
         try {
             System.exit(0);
@@ -82,12 +149,17 @@ public class Informes extends javax.swing.JFrame {
     private void Boton_VolverMenuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Boton_VolverMenuMouseClicked
         try {
             Menu_Principal Menu_Principal = new Menu_Principal();
+            Menu_Principal.setLocationRelativeTo(null);
             Menu_Principal.setVisible(true);
             dispose();
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Ocurrio un error:\n" + ex);
         }
     }//GEN-LAST:event_Boton_VolverMenuMouseClicked
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        JFreeChar();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -127,6 +199,8 @@ public class Informes extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Boton_Salir;
     private javax.swing.JButton Boton_VolverMenu;
+    private javax.swing.JButton jButton1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     // End of variables declaration//GEN-END:variables
 }

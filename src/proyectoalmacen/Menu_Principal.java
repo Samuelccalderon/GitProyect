@@ -143,6 +143,7 @@ public class Menu_Principal extends javax.swing.JFrame {
     private void Boton_FacturacionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Boton_FacturacionMouseClicked
         try {
             Menu_Facturacion Menu_Facturacion = new Menu_Facturacion();
+            Menu_Facturacion.setLocationRelativeTo(null);
             Menu_Facturacion.setVisible(true);
             dispose();
 
@@ -154,6 +155,7 @@ public class Menu_Principal extends javax.swing.JFrame {
     private void Boton_CreditosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Boton_CreditosMouseClicked
         try {
             Creditos Creditos = new Creditos();
+            Creditos.setLocationRelativeTo(null);
             Creditos.setVisible(true);
             dispose();
         } catch (Exception ex) {
@@ -164,6 +166,7 @@ public class Menu_Principal extends javax.swing.JFrame {
     private void Boton_InformesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Boton_InformesMouseClicked
         try {
             Informes Informes = new Informes();
+            Informes.setLocationRelativeTo(null);
             Informes.setVisible(true);
             dispose();
         } catch (Exception ex) {
@@ -174,6 +177,7 @@ public class Menu_Principal extends javax.swing.JFrame {
     private void Boton_ClientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Boton_ClientesMouseClicked
         try {
             AreaClientes AreaClientes = new AreaClientes();
+            AreaClientes.setLocationRelativeTo(null);
             AreaClientes.setVisible(true);
             dispose();
         } catch (Exception ex) {

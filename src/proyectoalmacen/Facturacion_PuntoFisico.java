@@ -4,18 +4,25 @@
  */
 package proyectoalmacen;
 import java.io.*;
+import java.util.ArrayList;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author Samue
  */
 public class Facturacion_PuntoFisico extends javax.swing.JFrame {
 
+    DefaultTableModel TablaModelo = new DefaultTableModel();
     /**
      * Creates new form 
      */
     public Facturacion_PuntoFisico() {
         initComponents();
+        
+        String[] Apartado = new String[] { "Nombre", "Documento", "Pago" };
+        TablaModelo.setColumnIdentifiers(Apartado);
+        jTable1.setModel(TablaModelo);
     }
 
     /**
@@ -27,6 +34,7 @@ public class Facturacion_PuntoFisico extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroup1 = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         Boton_Salir1 = new javax.swing.JButton();
         Boton_VolverMenuFacturacion1 = new javax.swing.JButton();
@@ -48,9 +56,15 @@ public class Facturacion_PuntoFisico extends javax.swing.JFrame {
         Precio_Suministros = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
+        Cuotas = new javax.swing.JComboBox<>();
+        RBoton_TarjetaDebito = new javax.swing.JRadioButton();
+        RBoton_CreditoTienda = new javax.swing.JRadioButton();
+        RBoton_TarjetaCredito = new javax.swing.JRadioButton();
+        RBoton_Efectivo = new javax.swing.JRadioButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jPanel1.setBackground(new java.awt.Color(0, 153, 153));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         Boton_Salir1.setText("SALIR");
@@ -95,6 +109,11 @@ public class Facturacion_PuntoFisico extends javax.swing.JFrame {
         jPanel1.add(Cantidad_Suministros, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 140, 60, 30));
 
         Boton_CargarCompra.setText("Cargar Compra");
+        Boton_CargarCompra.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Boton_CargarCompraActionPerformed(evt);
+            }
+        });
         jPanel1.add(Boton_CargarCompra, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 180, 170, 40));
 
         jLabel1.setText("ROPA");
@@ -129,6 +148,47 @@ public class Facturacion_PuntoFisico extends javax.swing.JFrame {
         jLabel7.setText("DOCUMENTO");
         jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 160, 130, 30));
 
+        Cuotas.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "3", "6", "12" }));
+        Cuotas.setEnabled(false);
+        jPanel1.add(Cuotas, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 170, -1, -1));
+
+        buttonGroup1.add(RBoton_TarjetaDebito);
+        RBoton_TarjetaDebito.setText("Tarjeta Debito");
+        RBoton_TarjetaDebito.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RBoton_TarjetaDebitoActionPerformed(evt);
+            }
+        });
+        jPanel1.add(RBoton_TarjetaDebito, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 130, -1, -1));
+
+        buttonGroup1.add(RBoton_CreditoTienda);
+        RBoton_CreditoTienda.setText("Credito Tienda");
+        RBoton_CreditoTienda.setToolTipText("Credito Tienda");
+        RBoton_CreditoTienda.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RBoton_CreditoTiendaActionPerformed(evt);
+            }
+        });
+        jPanel1.add(RBoton_CreditoTienda, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 170, -1, -1));
+
+        buttonGroup1.add(RBoton_TarjetaCredito);
+        RBoton_TarjetaCredito.setText("Tarjeta Credito");
+        RBoton_TarjetaCredito.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RBoton_TarjetaCreditoActionPerformed(evt);
+            }
+        });
+        jPanel1.add(RBoton_TarjetaCredito, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 90, -1, -1));
+
+        buttonGroup1.add(RBoton_Efectivo);
+        RBoton_Efectivo.setText("Efectivo");
+        RBoton_Efectivo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RBoton_EfectivoActionPerformed(evt);
+            }
+        });
+        jPanel1.add(RBoton_Efectivo, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 210, -1, -1));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -149,6 +209,188 @@ public class Facturacion_PuntoFisico extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    void Agregar() {
+        try {
+            if (Integer.valueOf(Cantidad_Ropa.getText()) < 0 || Integer.valueOf(Precio_Ropa.getText()) < 0
+                    || Integer.valueOf(Cantidad_Tenis.getText()) < 0 || Integer.valueOf(Precio_Tenis.getText()) < 0
+                    || Integer.valueOf(Cantidad_Suministros.getText()) < 0
+                    || Integer.valueOf(Precio_Suministros.getText()) < 0
+                    || Integer.valueOf(Caja_Documento.getText()) < 0) {
+                JOptionPane.showMessageDialog(null, "Ocurrio un error: Hay un numero negativo.\n");
+            } else {
+                String pago = "";
+                if (RBoton_CreditoTienda.isSelected())
+                    pago = "Credito";
+                else if (RBoton_TarjetaCredito.isSelected())
+                    pago = "Tarjeta de Credito";
+                else if (RBoton_TarjetaDebito.isSelected())
+                    pago = "Tarjeta de Debito";
+                else if (RBoton_Efectivo.isSelected()){
+                    pago = "Efectivo";
+                }
+                else {
+                    throw new Exception("Debe seleccionar al menos un metodo de pago.");
+                }
+                FacturarCliente(pago, Comprobar_Cliente());
+                Boton_CargarCompra.setEnabled(false);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Ocurrio un error" + e);
+        }
+    }
+
+    void FacturarCliente(String pago, boolean cliente) {
+        try {
+            int cropa = Integer.valueOf(Cantidad_Ropa.getText());
+            int ctenis = Integer.valueOf(Cantidad_Tenis.getText());
+            int csuministro = Integer.valueOf(Cantidad_Suministros.getText());
+            int pvtropa = Integer.valueOf(Precio_Ropa.getText());
+            int pvttenis = Integer.valueOf(Precio_Tenis.getText());
+            int pvtsumin = Integer.valueOf(Precio_Suministros.getText());
+
+            ArrayList<String> list = new ArrayList<>();
+            list.add(Caja_Nombre.getText());
+            list.add(Caja_Documento.getText());
+            list.add(pago);
+
+            if (cropa > 0) {
+                TablaModelo.addColumn("Cant.Ropa");
+                TablaModelo.addColumn("PVT.Ropa");
+                list.add(String.valueOf(cropa));
+                list.add(String.valueOf(pvtropa));
+            }
+            if (ctenis > 0) {
+                TablaModelo.addColumn("Cant.Tenis");
+                TablaModelo.addColumn("PVT.Tenis");
+                list.add(String.valueOf(ctenis));
+                list.add(String.valueOf(pvttenis));
+            }
+            if (csuministro > 0) {
+                TablaModelo.addColumn("Cant.Suministro");
+                TablaModelo.addColumn("PVT.Suministro");
+                list.add(String.valueOf(csuministro));
+                list.add(String.valueOf(pvtsumin));
+            }
+
+            int total = cropa * pvtropa + ctenis * pvttenis + csuministro * pvtsumin;
+            if (pago.equals("Credito")) {
+                total += total * 0.12;
+                TablaModelo.addColumn("Cuotas");
+                list.add(String.valueOf(Cuotas.getSelectedItem()));
+            } else {
+                if (cliente && !pago.equals("Credito")) {
+                    System.out.println(pago);
+                    double descuento;
+                    if (pago.equals("Efectivo"))
+                        descuento = total * 0.05;
+                    else
+                        descuento = total * 0.03;
+                    total -= descuento;
+                    TablaModelo.addColumn("Descuento");
+                    list.add(String.valueOf(descuento));
+                }
+            }
+            double iva = total*0.19;
+            list.add(String.valueOf(iva));
+            TablaModelo.addColumn("IVA");
+            total -= iva;
+            list.add(String.valueOf(total));
+            TablaModelo.addColumn("Total");
+            TablaModelo.addRow(list.toArray());
+            if(pago.equals("Credito")){
+                EscribirCreditos(total);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Ocurrio un error:\n" + e);
+        }
+    }
+    
+    boolean Comprobar_Cliente(){
+        boolean cliente = false;
+        try {
+            String docuser = Caja_Documento.getText();
+            String linea = "",documento;
+            FileReader Archivo = new FileReader ("Stores\\Prueba_Cliente.txt");
+            BufferedReader Datos = new BufferedReader(Archivo);
+            Datos.readLine();
+            while (linea != null) {
+                documento = Datos.readLine();
+                Datos.readLine();
+                Datos.readLine();
+                linea = Datos.readLine();
+                if(documento.equals(docuser)){
+                    cliente = true; 
+                    break;
+                }
+           }
+            Archivo.close();
+        } 
+        catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Ocurrio un error:\n" + e);
+        }
+        return cliente;
+
+    }
+    public static boolean esNumero(String cadena) {
+        try {
+            Integer.parseInt(cadena);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    void EscribirCreditos(int total){
+        try {
+            String nuevoContenido;
+            int cuotas = Integer.valueOf(String.valueOf(Cuotas.getSelectedItem()));
+            nuevoContenido = (Caja_Documento.getText()+"\n"+String.valueOf(cuotas)+"\n"+String.valueOf(total/cuotas));
+            
+            String contenido = "";
+            
+            BufferedReader fr = new BufferedReader(new FileReader("Stores\\Creditos.txt"));
+            String linea="";
+            int cuenta=0;
+            do{
+                linea=fr.readLine();
+                if(linea!=null){
+                   cuenta++;
+                }
+            }while(linea!=null);
+            
+            fr.close();
+            fr = new BufferedReader(new FileReader("Stores\\Creditos.txt"));
+            linea="";
+            for (int i = 0; i < cuenta; i++) {
+                linea=fr.readLine();
+                if(linea!=null){
+                    if(i==cuenta-1){
+                       contenido+=linea+"\n";
+                   }    
+                    else{
+                        contenido+=linea+"\n";
+                    }
+                }
+            }
+           
+            System.out.println(contenido);
+            
+            FileWriter archivo = new FileWriter("Stores\\Creditos.txt");
+            archivo.write(contenido);
+            archivo.write(nuevoContenido);
+            archivo.close();
+
+            
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+    
+    void Eliminar() {
+        int fila = jTable1.getSelectedRow();
+        TablaModelo.removeRow(fila);
+    }
+    
     private void Boton_Salir1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Boton_Salir1MouseClicked
         try {
             System.exit(0);
@@ -157,15 +399,45 @@ public class Facturacion_PuntoFisico extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_Boton_Salir1MouseClicked
 
+    
+    private void Cuotas() {
+        if (RBoton_CreditoTienda.isSelected()) {
+            Cuotas.setEnabled(true);
+        } else {
+            Cuotas.setEnabled(false);
+        }
+        Cuotas.setSelectedIndex(0);
+    }
     private void Boton_VolverMenuFacturacion1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Boton_VolverMenuFacturacion1MouseClicked
         try {
             Menu_Facturacion Menu_Facturacion = new Menu_Facturacion();
+            Menu_Facturacion.setLocationRelativeTo(null);
             Menu_Facturacion.setVisible(true);
             dispose();
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Ocurrio un error:\n" + ex);
         }
     }//GEN-LAST:event_Boton_VolverMenuFacturacion1MouseClicked
+
+    private void RBoton_TarjetaCreditoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RBoton_TarjetaCreditoActionPerformed
+        Cuotas();
+    }//GEN-LAST:event_RBoton_TarjetaCreditoActionPerformed
+
+    private void RBoton_TarjetaDebitoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RBoton_TarjetaDebitoActionPerformed
+        Cuotas();
+    }//GEN-LAST:event_RBoton_TarjetaDebitoActionPerformed
+
+    private void RBoton_CreditoTiendaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RBoton_CreditoTiendaActionPerformed
+        Cuotas();
+    }//GEN-LAST:event_RBoton_CreditoTiendaActionPerformed
+
+    private void RBoton_EfectivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RBoton_EfectivoActionPerformed
+        Cuotas();
+    }//GEN-LAST:event_RBoton_EfectivoActionPerformed
+
+    private void Boton_CargarCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Boton_CargarCompraActionPerformed
+        Agregar();
+    }//GEN-LAST:event_Boton_CargarCompraActionPerformed
 
     /**
      * @param args the command line arguments
@@ -201,6 +473,8 @@ public class Facturacion_PuntoFisico extends javax.swing.JFrame {
             }
         });
     }
+    
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Boton_CargarCompra;
@@ -211,9 +485,15 @@ public class Facturacion_PuntoFisico extends javax.swing.JFrame {
     private javax.swing.JTextField Cantidad_Ropa;
     private javax.swing.JTextField Cantidad_Suministros;
     private javax.swing.JTextField Cantidad_Tenis;
+    private javax.swing.JComboBox<String> Cuotas;
     private javax.swing.JTextField Precio_Ropa;
     private javax.swing.JTextField Precio_Suministros;
     private javax.swing.JTextField Precio_Tenis;
+    private javax.swing.JRadioButton RBoton_CreditoTienda;
+    private javax.swing.JRadioButton RBoton_Efectivo;
+    private javax.swing.JRadioButton RBoton_TarjetaCredito;
+    private javax.swing.JRadioButton RBoton_TarjetaDebito;
+    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

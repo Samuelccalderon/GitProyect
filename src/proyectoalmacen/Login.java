@@ -7,6 +7,7 @@ public class Login extends javax.swing.JFrame {
 
     public Login() {
         initComponents();
+        
     }
 
     /**
@@ -111,6 +112,7 @@ public class Login extends javax.swing.JFrame {
         try {
             Menu_Principal Menu_Principal = new Menu_Principal();
             if (Archivo_Usuario_Contraseña(Caja_Usuario.getText(), Caja_Contrasena.getText()) == true) {
+                Menu_Principal.setLocationRelativeTo(null);
                 Menu_Principal.setVisible(true);         
                 dispose();
             } else {
@@ -201,7 +203,7 @@ public class Login extends javax.swing.JFrame {
         }
         return llave_acceso;
     }
-
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Boton_Entrar;
     private javax.swing.JButton Boton_Salir;

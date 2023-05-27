@@ -4,39 +4,115 @@ import java.awt.List;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import javax.management.StringValueExp;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class Facturacion_Internet extends javax.swing.JFrame {
-    
-     DefaultTableModel TablaModelo = new DefaultTableModel();
+
+    DefaultTableModel TablaModelo = new DefaultTableModel();
 
     public Facturacion_Internet() {
         initComponents();
-        //String[] Apartado = new  String[]{"Nombre","Documento","Pago","cant.Ropa","P.V.T.Ropa","cant.Tenis","P.V.T.Tenis","cant.Suministro","P.V.T.Suministro","Total"};
-        String[] Apartado = new  String[]{"Nombre","Documento","Pago"};
+        // String[] Apartado = new
+        // String[]{"Nombre","Documento","Pago","cant.Ropa","P.V.T.Ropa","cant.Tenis","P.V.T.Tenis","cant.Suministro","P.V.T.Suministro","Total"};
+        String[] Apartado = new String[] { "Nombre", "Documento", "Pago" };
         TablaModelo.setColumnIdentifiers(Apartado);
         jTable1.setModel(TablaModelo);
     }
-    void Agregar(){
+
+    void Agregar() {
         try {
-            String pago = "";
-            if(RBoton_CreditoTienda.isSelected()) pago = "Credito";
-            else if(RBoton_TarjetaCredito.isSelected()) pago = "Tarjeta de Credito";
-            else if(RBoton_TarjetaDebito.isSelected()) pago = "Tarjeta de Debito";
-            else{
-                throw new Exception("Debe seleccionar al menos un metodo de pago.");
+            if (Integer.valueOf(Cantidad_Ropa.getText()) < 0 || Integer.valueOf(Precio_Ropa.getText()) < 0
+                    || Integer.valueOf(Cantidad_Tenis.getText()) < 0 || Integer.valueOf(Precio_Tenis.getText()) < 0
+                    || Integer.valueOf(Cantidad_Suministros.getText()) < 0
+                    || Integer.valueOf(Precio_Suministros.getText()) < 0
+                    || Integer.valueOf(Caja_Documento.getText()) < 0) {
+                JOptionPane.showMessageDialog(null, "Ocurrio un error: Hay un numero negativo.\n");
+            } else {
+                String pago = "";
+                if (RBoton_CreditoTienda.isSelected())
+                    pago = "Credito";
+                else if (RBoton_TarjetaCredito.isSelected())
+                    pago = "Tarjeta de Credito";
+                else if (RBoton_TarjetaDebito.isSelected())
+                    pago = "Tarjeta de Debito";
+                else {
+                    throw new Exception("Debe seleccionar al menos un metodo de pago.");
+                }
+                FacturarCliente(pago, Comprobar_Cliente());
+                Boton_CargarCompra.setEnabled(false);
+                
             }
-            FacturarCliente(pago, Comprobar_Cliente());
-            Boton_CargarCompra.setEnabled(false);
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Ocurrio un error"+e);
+            JOptionPane.showMessageDialog(null, "Ocurrio un error" + e);
         }
     }
     
-    void FacturarCliente(String pago, boolean cliente){
+    void EscribirCreditos(int total){
+        try {
+            String nuevoContenido;
+            DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate fecha = LocalDate.parse("2023-02-26", formato);
+            int cuotas = Integer.valueOf(String.valueOf(Cuotas.getSelectedItem()));
+            nuevoContenido = (Caja_Documento.getText()+"\n"+String.valueOf(cuotas)+"\n"+String.valueOf(total/cuotas))+fecha+"";
+            
+            String contenido = "";
+            
+            BufferedReader fr = new BufferedReader(new FileReader("Stores\\Creditos.txt"));
+            String linea="";
+            int cuenta=0;
+            do{
+                linea=fr.readLine();
+                if(linea!=null){
+                   cuenta++;
+                }
+            }while(linea!=null);
+            
+            fr.close();
+            fr = new BufferedReader(new FileReader("Stores\\Creditos.txt"));
+            linea="";
+            for (int i = 0; i < cuenta; i++) {
+                linea=fr.readLine();
+                if(linea!=null){
+                    if(i==cuenta-1){
+                       contenido+=linea+"\n";
+                   }    
+                    else{
+                        contenido+=linea+"\n";
+                    }
+                }
+            }
+           
+            System.out.println(contenido);
+            
+            FileWriter archivo = new FileWriter("Stores\\Creditos.txt");
+            archivo.write(contenido);
+            archivo.write(nuevoContenido);
+            archivo.close();
+
+            
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+    
+    
+    int CalcularMeses(int año, int mes, int dia){
+        LocalDate fechaInicial = LocalDate.of(2022, 1, 1);
+        
+        LocalDate fechaActual = LocalDate.now();
+        
+        Period periodo = Period.between(fechaInicial, fechaActual);
+        return periodo.getMonths();
+    }
+    
+
+    void FacturarCliente(String pago, boolean cliente) {
         try {
             int cropa = Integer.valueOf(Cantidad_Ropa.getText());
             int ctenis = Integer.valueOf(Cantidad_Tenis.getText());
@@ -44,58 +120,64 @@ public class Facturacion_Internet extends javax.swing.JFrame {
             int pvtropa = Integer.valueOf(Precio_Ropa.getText());
             int pvttenis = Integer.valueOf(Precio_Tenis.getText());
             int pvtsumin = Integer.valueOf(Precio_Suministros.getText());
-            
-            
+
             ArrayList<String> list = new ArrayList<>();
             list.add(Caja_Nombre.getText());
             list.add(Caja_Documento.getText());
             list.add(pago);
-            
-            if(cropa>0){
+
+            if (cropa > 0) {
                 TablaModelo.addColumn("Cant.Ropa");
                 TablaModelo.addColumn("PVT.Ropa");
                 list.add(String.valueOf(cropa));
                 list.add(String.valueOf(pvtropa));
             }
-            if(ctenis>0){
+            if (ctenis > 0) {
                 TablaModelo.addColumn("Cant.Tenis");
                 TablaModelo.addColumn("PVT.Tenis");
                 list.add(String.valueOf(ctenis));
                 list.add(String.valueOf(pvttenis));
             }
-            if(csuministro>0){
+            if (csuministro > 0) {
                 TablaModelo.addColumn("Cant.Suministro");
                 TablaModelo.addColumn("PVT.Suministro");
                 list.add(String.valueOf(csuministro));
                 list.add(String.valueOf(pvtsumin));
             }
-            
-            int total = cropa*pvtropa + ctenis*pvttenis + csuministro*pvtsumin;
-            if(pago.equals("Credito")){
-                total += total*0.12;
+
+            int total = cropa * pvtropa + ctenis * pvttenis + csuministro * pvtsumin;
+            if (pago.equals("Credito")) {
+                total += total * 0.12;
                 TablaModelo.addColumn("Cuotas");
                 list.add(String.valueOf(Cuotas.getSelectedItem()));
-            }
-            else{
-                if(cliente && !pago.equals("Credito")){
+            } else {
+                if (cliente && !pago.equals("Credito")) {
                     System.out.println(pago);
                     double descuento;
-                    if(pago.equals("Efectivo")) descuento=total+total*0.05;
-                    else descuento=total*0.03;
+                    if (pago.equals("Efectivo"))
+                        descuento = total * 0.05;
+                    else
+                        descuento = total * 0.03;
                     total -= descuento;
                     TablaModelo.addColumn("Descuento");
                     list.add(String.valueOf(descuento));
                 }
             }
+            double iva = total*0.19;
+            list.add(String.valueOf(iva));
+            TablaModelo.addColumn("IVA");
+            total -= iva;
             list.add(String.valueOf(total));
             TablaModelo.addColumn("Total");
             TablaModelo.addRow(list.toArray());
-        } 
-        catch (Exception e) {
+            if(pago.equals("Credito")){
+                EscribirCreditos(total);
+            }
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Ocurrio un error:\n" + e);
         }
     }
-    
+
     boolean Comprobar_Cliente(){
         boolean cliente = false;
         try {
@@ -120,13 +202,29 @@ public class Facturacion_Internet extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Ocurrio un error:\n" + e);
         }
         return cliente;
+
     }
+    public static boolean esNumero(String cadena) {
+        try {
+            Integer.parseInt(cadena);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    void Eliminar() {
+        int fila = jTable1.getSelectedRow();
+        TablaModelo.removeRow(fila);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
      * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -160,6 +258,7 @@ public class Facturacion_Internet extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jPanel1.setBackground(new java.awt.Color(0, 153, 153));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         Boton_Salir.setText("SALIR");
@@ -195,12 +294,32 @@ public class Facturacion_Internet extends javax.swing.JFrame {
         jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 310, 910, 160));
 
         Cantidad_Ropa.setText("0");
+        Cantidad_Ropa.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                Cantidad_RopaMouseClicked(evt);
+            }
+        });
         jPanel1.add(Cantidad_Ropa, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 80, 60, 30));
 
         Cantidad_Tenis.setText("0");
+        Cantidad_Tenis.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                Cantidad_TenisMouseClicked(evt);
+            }
+        });
+        Cantidad_Tenis.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Cantidad_TenisActionPerformed(evt);
+            }
+        });
         jPanel1.add(Cantidad_Tenis, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 110, 60, 30));
 
         Cantidad_Suministros.setText("0");
+        Cantidad_Suministros.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                Cantidad_SuministrosMouseClicked(evt);
+            }
+        });
         jPanel1.add(Cantidad_Suministros, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 140, 60, 30));
 
         Boton_CargarCompra.setText("Cargar Compra");
@@ -235,12 +354,32 @@ public class Facturacion_Internet extends javax.swing.JFrame {
         jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 60, 100, -1));
 
         Precio_Ropa.setText("0");
+        Precio_Ropa.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                Precio_RopaMouseClicked(evt);
+            }
+        });
+        Precio_Ropa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Precio_RopaActionPerformed(evt);
+            }
+        });
         jPanel1.add(Precio_Ropa, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 80, 100, 30));
 
         Precio_Tenis.setText("0");
+        Precio_Tenis.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                Precio_TenisMouseClicked(evt);
+            }
+        });
         jPanel1.add(Precio_Tenis, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 110, 100, 30));
 
         Precio_Suministros.setText("0");
+        Precio_Suministros.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                Precio_SuministrosMouseClicked(evt);
+            }
+        });
         jPanel1.add(Precio_Suministros, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 140, 100, 30));
 
         jLabel6.setText("NOMBRE");
@@ -250,6 +389,11 @@ public class Facturacion_Internet extends javax.swing.JFrame {
         jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 160, 130, 30));
 
         Boton_EliminarCompra.setText("Eliminar Compra");
+        Boton_EliminarCompra.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Boton_EliminarCompraActionPerformed(evt);
+            }
+        });
         jPanel1.add(Boton_EliminarCompra, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 230, 170, 40));
 
         buttonGroup1.add(RBoton_TarjetaCredito);
@@ -282,6 +426,11 @@ public class Facturacion_Internet extends javax.swing.JFrame {
 
         Cuotas.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "3", "6", "12" }));
         Cuotas.setEnabled(false);
+        Cuotas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CuotasActionPerformed(evt);
+            }
+        });
         jPanel1.add(Cuotas, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 190, -1, -1));
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -289,61 +438,108 @@ public class Facturacion_Internet extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void Boton_SalirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Boton_SalirMouseClicked
+    private void CuotasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CuotasActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_CuotasActionPerformed
+
+    private void Boton_SalirMouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_Boton_SalirMouseClicked
         try {
             System.exit(0);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Ocurrio un error:\n" + ex);
         }
-    }//GEN-LAST:event_Boton_SalirMouseClicked
+    }// GEN-LAST:event_Boton_SalirMouseClicked
 
-    private void Boton_VolverMenuFacturacionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Boton_VolverMenuFacturacionMouseClicked
+    private void Boton_VolverMenuFacturacionMouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_Boton_VolverMenuFacturacionMouseClicked
         try {
             Menu_Facturacion Menu_Facturacion = new Menu_Facturacion();
+            Menu_Facturacion.setLocationRelativeTo(null);
             Menu_Facturacion.setVisible(true);
             dispose();
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Ocurrio un error:\n" + ex);
         }
-    }//GEN-LAST:event_Boton_VolverMenuFacturacionMouseClicked
+    }// GEN-LAST:event_Boton_VolverMenuFacturacionMouseClicked
 
-    private void Boton_CargarCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Boton_CargarCompraActionPerformed
+    private void Boton_CargarCompraActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_Boton_CargarCompraActionPerformed
         Agregar();
-    }//GEN-LAST:event_Boton_CargarCompraActionPerformed
+    }// GEN-LAST:event_Boton_CargarCompraActionPerformed
 
-    private void RBoton_CreditoTiendaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RBoton_CreditoTiendaActionPerformed
+    private void RBoton_CreditoTiendaActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_RBoton_CreditoTiendaActionPerformed
         Cuotas();
-    }//GEN-LAST:event_RBoton_CreditoTiendaActionPerformed
+    }// GEN-LAST:event_RBoton_CreditoTiendaActionPerformed
 
-    private void RBoton_TarjetaCreditoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RBoton_TarjetaCreditoActionPerformed
+    private void RBoton_TarjetaCreditoActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_RBoton_TarjetaCreditoActionPerformed
         Cuotas();
-    }//GEN-LAST:event_RBoton_TarjetaCreditoActionPerformed
+    }// GEN-LAST:event_RBoton_TarjetaCreditoActionPerformed
 
-    private void RBoton_TarjetaDebitoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RBoton_TarjetaDebitoActionPerformed
+    private void RBoton_TarjetaDebitoActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_RBoton_TarjetaDebitoActionPerformed
         Cuotas();
-    }//GEN-LAST:event_RBoton_TarjetaDebitoActionPerformed
+    }// GEN-LAST:event_RBoton_TarjetaDebitoActionPerformed
 
-    private void Caja_DocumentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Caja_DocumentoActionPerformed
+    private void Caja_DocumentoActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_Caja_DocumentoActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_Caja_DocumentoActionPerformed
+    }// GEN-LAST:event_Caja_DocumentoActionPerformed
 
-    private void Cuotas(){
-        if(RBoton_CreditoTienda.isSelected()){
+    private void Cuotas() {
+        if (RBoton_CreditoTienda.isSelected()) {
             Cuotas.setEnabled(true);
-        }
-        else{
+        } else {
             Cuotas.setEnabled(false);
         }
         Cuotas.setSelectedIndex(0);
     }
+
+    private void Precio_RopaActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_Precio_RopaActionPerformed
+
+    }// GEN-LAST:event_Precio_RopaActionPerformed
+
+    private void Cantidad_RopaMouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_Cantidad_RopaMouseClicked
+        Cantidad_Ropa.setText("");
+    }// GEN-LAST:event_Cantidad_RopaMouseClicked
+
+    private void Cantidad_TenisActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_Cantidad_TenisActionPerformed
+        // TODO add your handling code here:
+    }// GEN-LAST:event_Cantidad_TenisActionPerformed
+
+    private void Cantidad_TenisMouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_Cantidad_TenisMouseClicked
+        Cantidad_Tenis.setText("");
+    }// GEN-LAST:event_Cantidad_TenisMouseClicked
+
+    private void Cantidad_SuministrosMouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_Cantidad_SuministrosMouseClicked
+        Cantidad_Suministros.setText("");
+    }// GEN-LAST:event_Cantidad_SuministrosMouseClicked
+
+    private void Precio_RopaMouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_Precio_RopaMouseClicked
+        Precio_Ropa.setText("");
+    }// GEN-LAST:event_Precio_RopaMouseClicked
+
+    private void Precio_TenisMouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_Precio_TenisMouseClicked
+        Precio_Tenis.setText("");
+    }// GEN-LAST:event_Precio_TenisMouseClicked
+
+    private void Precio_SuministrosMouseClicked(java.awt.event.MouseEvent evt) {// GEN-FIRST:event_Precio_SuministrosMouseClicked
+
+        Precio_Suministros.setText("");
+        // TODO add your handling code here:
+    }// GEN-LAST:event_Precio_SuministrosMouseClicked
+
+    private void Boton_EliminarCompraActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_Boton_EliminarCompraActionPerformed
+        Eliminar();
+    }// GEN-LAST:event_Boton_EliminarCompraActionPerformed
+
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+        // <editor-fold defaultstate="collapsed" desc=" Look and feel setting code
+        // (optional) ">
+        /*
+         * If Nimbus (introduced in Java SE 6) is not available, stay with the default
+         * look and feel.
+         * For details see
+         * http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -353,15 +549,19 @@ public class Facturacion_Internet extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Facturacion_Internet.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Facturacion_Internet.class.getName()).log(java.util.logging.Level.SEVERE,
+                    null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Facturacion_Internet.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Facturacion_Internet.class.getName()).log(java.util.logging.Level.SEVERE,
+                    null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Facturacion_Internet.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Facturacion_Internet.class.getName()).log(java.util.logging.Level.SEVERE,
+                    null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Facturacion_Internet.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Facturacion_Internet.class.getName()).log(java.util.logging.Level.SEVERE,
+                    null, ex);
         }
-        //</editor-fold>
+        // </editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {

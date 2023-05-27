@@ -4,20 +4,85 @@
  */
 package proyectoalmacen;
 import java.io.*;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 /**
  *
  * @author Samue
  */
 public class Creditos extends javax.swing.JFrame {
 
+    
+    DefaultTableModel TablaModelo = new DefaultTableModel();
     /**
      * Creates new form Creditos
      */
     public Creditos() {
         initComponents();
+        initComponents();
+        String[] Apartado = new  String[]{"id","Cantidad","Pagadas","Debe","Valor","Atrasado"};
+        TablaModelo.setColumnIdentifiers(Apartado);
+        jTable1.setModel(TablaModelo);
     }
 
+    
+    void CargarCreditos(){
+        try {
+            System.out.println("holaaa");
+            DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            BufferedReader fr = new BufferedReader(new FileReader("Stores\\Creditos.txt"));
+            String linea="";
+            int cantidad,pagadas,debe,valor;
+            boolean atrasado=false;
+            String id;
+            
+            linea=fr.readLine();
+            System.out.println("hosa");
+            while(linea!=null){
+                System.out.println("asdsdds");
+                id = linea;
+                System.out.println(linea);
+                linea = fr.readLine();
+                System.out.println(linea);
+                cantidad = Integer.parseInt(linea);
+                linea = fr.readLine();
+                System.out.println(linea);
+                valor = Integer.parseInt(linea);
+                linea = fr.readLine();
+                System.out.println(linea);
+                // Parsear el String a LocalDate
+                LocalDate fecha = LocalDate.parse(linea, formato);
+                int meses = CalcularMeses(fecha);
+                if(meses>cantidad){
+                    pagadas = cantidad;
+                }
+                else{
+                    pagadas = meses;
+                }
+                
+                if(cantidad-pagadas<0){
+                    debe=0;
+                }
+                else{
+                    debe = cantidad-pagadas;
+                    atrasado = true;
+                }
+                linea = fr.readLine();
+                System.out.println(linea);
+                System.out.println(cantidad+"  "+pagadas+"  "+debe+"  "+valor+"  "+atrasado+"  "+id);
+                TablaModelo.addRow(new Object[]{id, cantidad,pagadas,debe,valor,atrasado});
+            }
+            
+            fr.close();
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -30,9 +95,13 @@ public class Creditos extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         Boton_Salir = new javax.swing.JButton();
         Boton_VolverMenu = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jPanel1.setBackground(new java.awt.Color(0, 153, 153));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         Boton_Salir.setText("SALIR");
@@ -41,7 +110,7 @@ public class Creditos extends javax.swing.JFrame {
                 Boton_SalirMouseClicked(evt);
             }
         });
-        jPanel1.add(Boton_Salir, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 20, -1, -1));
+        jPanel1.add(Boton_Salir, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 10, -1, -1));
 
         Boton_VolverMenu.setText("VOLVER AL MENU");
         Boton_VolverMenu.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -49,7 +118,30 @@ public class Creditos extends javax.swing.JFrame {
                 Boton_VolverMenuMouseClicked(evt);
             }
         });
-        jPanel1.add(Boton_VolverMenu, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 20, -1, -1));
+        jPanel1.add(Boton_VolverMenu, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
+            },
+            new String [] {
+                "Cedula", "Cantidad Cuotas", "Cuotas pagadas", "Cuotas a deber", "Esta atrasado", "Valor Cuotas"
+            }
+        ));
+        jScrollPane1.setViewportView(jTable1);
+
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 170, 790, 270));
+
+        jButton1.setText("CARGAR DATOS");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 80, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -57,14 +149,13 @@ public class Creditos extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 858, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -79,9 +170,20 @@ public class Creditos extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_Boton_SalirMouseClicked
 
+    int CalcularMeses(LocalDate fechaInicial){
+
+        // Fecha actual
+        LocalDate fechaActual = LocalDate.now();
+
+        // Calcular la diferencia de meses
+        Period periodo = Period.between(fechaInicial, fechaActual);
+        return periodo.getMonths();
+    
+    }
     private void Boton_VolverMenuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Boton_VolverMenuMouseClicked
         try {
             Menu_Principal Menu_Principal = new Menu_Principal();
+            Menu_Principal.setLocationRelativeTo(null);
             Menu_Principal.setVisible(true);
             dispose();
         } catch (Exception ex) {
@@ -89,6 +191,11 @@ public class Creditos extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_Boton_VolverMenuMouseClicked
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+       CargarCreditos();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+   
     /**
      * @param args the command line arguments
      */
@@ -127,6 +234,9 @@ public class Creditos extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Boton_Salir;
     private javax.swing.JButton Boton_VolverMenu;
+    private javax.swing.JButton jButton1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 }
