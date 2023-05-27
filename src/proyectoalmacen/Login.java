@@ -182,7 +182,7 @@ public class Login extends javax.swing.JFrame {
         String sa ="";
         try {
             String linea = "";
-            FileReader Archivo = new FileReader("C:\\Users\\Samue\\OneDrive\\Documents\\ProyectoAlmacen\\Usuario_Contraseña.txt");
+            FileReader Archivo = new FileReader("Stores\\Usuario_Contraseña.txt");
             BufferedReader Datos = new BufferedReader(Archivo);
 
             linea = Datos.readLine();

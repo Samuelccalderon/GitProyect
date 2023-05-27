@@ -15,6 +15,7 @@ public class AreaClientes extends javax.swing.JFrame {
         String[] Apartado = new  String[]{"Nombre","Documento","Cantida","Correo"};
         TablaModelo.setColumnIdentifiers(Apartado);
         jTable1.setModel(TablaModelo);
+        CargarDatos();
     }
     void Agregar(){
         TablaModelo.addRow(new Object[]{Box_Nombre.getText(),Box_Documento.getText(),Box_Telefono.getText(),Box_Correo.getText()});
@@ -27,7 +28,7 @@ public class AreaClientes extends javax.swing.JFrame {
      try {
             String Nombre = "", Documento = "", Telefono = "", Correo = "";
             String linea = "";
-            FileReader Archivo = new FileReader ("C:\\Users\\Samue\\OneDrive\\Documents\\ProyectoAlmacen\\Prueba_Cliente.txt");
+            FileReader Archivo = new FileReader ("Stores\\Prueba_Cliente.txt");
             BufferedReader Datos = new BufferedReader(Archivo);
             linea = Datos.readLine();
             while (linea != null) {
