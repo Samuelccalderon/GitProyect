@@ -82,6 +82,7 @@ public class Informes extends javax.swing.JFrame {
     private void Boton_VolverMenuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Boton_VolverMenuMouseClicked
         try {
             Menu_Principal Menu_Principal = new Menu_Principal();
+            Menu_Principal.setLocationRelativeTo(null);
             Menu_Principal.setVisible(true);
             dispose();
         } catch (Exception ex) {

@@ -160,6 +160,7 @@ public class Facturacion_PuntoFisico extends javax.swing.JFrame {
     private void Boton_VolverMenuFacturacion1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Boton_VolverMenuFacturacion1MouseClicked
         try {
             Menu_Facturacion Menu_Facturacion = new Menu_Facturacion();
+            Menu_Facturacion.setLocationRelativeTo(null);
             Menu_Facturacion.setVisible(true);
             dispose();
         } catch (Exception ex) {

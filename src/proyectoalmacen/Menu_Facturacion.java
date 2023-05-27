@@ -127,7 +127,9 @@ public class Menu_Facturacion extends javax.swing.JFrame {
     private void Boton_VolverMenuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Boton_VolverMenuMouseClicked
         try {
             Menu_Principal Menu_Principal = new Menu_Principal();
+            Menu_Principal.setLocationRelativeTo(null);
             Menu_Principal.setVisible(true);
+            
             dispose();
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Ocurrio un error:\n" + ex);
@@ -137,6 +139,7 @@ public class Menu_Facturacion extends javax.swing.JFrame {
     private void Boton_FacturacionPuntoFisicoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Boton_FacturacionPuntoFisicoMouseClicked
         try {
             Facturacion_PuntoFisico Facturacion_PuntoFisico = new Facturacion_PuntoFisico();
+            Facturacion_PuntoFisico.setLocationRelativeTo(null);
             Facturacion_PuntoFisico.setVisible(true);
             dispose();
         } catch (Exception ex) {
@@ -148,6 +151,7 @@ public class Menu_Facturacion extends javax.swing.JFrame {
     private void Boton_FacturacionInternetMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Boton_FacturacionInternetMouseClicked
         try {
             Facturacion_Internet Facturacion_Internet = new Facturacion_Internet();
+            Facturacion_Internet.setLocationRelativeTo(null);
             Facturacion_Internet.setVisible(true);
             dispose();
         } catch (Exception ex) {

@@ -12,22 +12,38 @@ public class AreaClientes extends javax.swing.JFrame {
 
     public AreaClientes() {
         initComponents();
-        String[] Apartado = new  String[]{"Nombre","Documento","Cantida","Correo"};
+        String[] Apartado = new String[]{"Nombre", "Documento", "Cantida", "Correo"};
         TablaModelo.setColumnIdentifiers(Apartado);
         jTable1.setModel(TablaModelo);
     }
-    void Agregar(){
-        TablaModelo.addRow(new Object[]{Box_Nombre.getText(),Box_Documento.getText(),Box_Telefono.getText(),Box_Correo.getText()});
+
+    void Agregar() {
+        if (contieneNumeros(Box_Nombre.getText())) {
+            JOptionPane.showMessageDialog(null, "Ingresa un nombre correcto, por favor verificar.\n");
+        } else if (Box_Nombre.getText().isEmpty() || Box_Documento.getText().isEmpty() || Box_Telefono.getText().isEmpty() || Box_Correo.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ingresaste un lugar vacio, por favor verifica.\n");
+        } else if (Box_Nombre.getText().equals("NOMBRE") || Box_Documento.getText().equals("DOCUMENTO DE IDENTIDAD") || Box_Telefono.getText().equals("TELEFONO") || Box_Correo.getText().equals("CORREO ELECTRONICO")) {
+            JOptionPane.showMessageDialog(null, "Faltan datos por ingresar, por favor verificar.\n");
+        } else {
+            TablaModelo.addRow(new Object[]{Box_Nombre.getText(), Box_Documento.getText(), Box_Telefono.getText(), Box_Correo.getText()});
+        }
     }
-    void Eliminar(){
+
+    void Eliminar() {
         int fila = jTable1.getSelectedRow();
+        
         TablaModelo.removeRow(fila);
     }
-    void CargarDatos(){
-     try {
+
+    public static boolean contieneNumeros(String palabra) {
+        return palabra.matches(".*\\d.*");
+    }
+
+    void CargarDatos() {
+        try {
             String Nombre = "", Documento = "", Telefono = "", Correo = "";
             String linea = "";
-            FileReader Archivo = new FileReader ("C:\\Users\\Samue\\OneDrive\\Documents\\ProyectoAlmacen\\Prueba_Cliente.txt");
+            FileReader Archivo = new FileReader("C:\\Users\\Samue\\OneDrive\\Documents\\ProyectoAlmacen\\Prueba_Cliente.txt");
             BufferedReader Datos = new BufferedReader(Archivo);
             linea = Datos.readLine();
             while (linea != null) {
@@ -39,23 +55,22 @@ public class AreaClientes extends javax.swing.JFrame {
                 linea = Datos.readLine();
                 Correo = linea;
                 linea = Datos.readLine();
-                TablaModelo.addRow(new Object[]{Nombre,Documento,Telefono,Correo});
+                TablaModelo.addRow(new Object[]{Nombre, Documento, Telefono, Correo});
             }
             Archivo.close();
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Ocurrio un error:\n" + ex);
         }
     }
-    
-    private void Boton_CargarDatosClienteActionPerformed(java.awt.event.ActionEvent evt) {                                                         
-                try {
-        CargarDatos();
+
+    private void Boton_CargarDatosClienteActionPerformed(java.awt.event.ActionEvent evt) {
+        try {
+            CargarDatos();
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Ocurrio un error:\n" + ex);
         }
     }
-    
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -241,30 +256,32 @@ public class AreaClientes extends javax.swing.JFrame {
     private void Boton_VolverMenuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Boton_VolverMenuMouseClicked
         try {
             Menu_Principal Menu_Principal = new Menu_Principal();
+            Menu_Principal.setLocationRelativeTo(null);
+            
             Menu_Principal.setVisible(true);
             dispose();
         } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, "Ocurrio un error:\n" + ex);
+            JOptionPane.showMessageDialog(null, "Ocurrio un error:\n" + ex);
         }
     }//GEN-LAST:event_Boton_VolverMenuMouseClicked
-    void Guardar(){
-    try {
-            
+    void Guardar() {
+        try {
+
             FileWriter Escribrir_Archivo = new FileWriter("C:\\Users\\Samue\\OneDrive\\Documents\\ProyectoAlmacen\\Prueba_Cliente.txt");
-            
-            for (int i = 0; i <this.TablaModelo.getRowCount(); i++) {
-                Escribrir_Archivo.write(jTable1.getValueAt(i, 0).toString()+"\n");
-                Escribrir_Archivo.write(jTable1.getValueAt(i, 1).toString()+"\n");
-                Escribrir_Archivo.write(jTable1.getValueAt(i, 2).toString()+"\n");
-                Escribrir_Archivo.write(jTable1.getValueAt(i, 3).toString()+"\n");
+
+            for (int i = 0; i < this.TablaModelo.getRowCount(); i++) {
+                Escribrir_Archivo.write(jTable1.getValueAt(i, 0).toString() + "\n");
+                Escribrir_Archivo.write(jTable1.getValueAt(i, 1).toString() + "\n");
+                Escribrir_Archivo.write(jTable1.getValueAt(i, 2).toString() + "\n");
+                Escribrir_Archivo.write(jTable1.getValueAt(i, 3).toString() + "\n");
             }
-            
+
             Escribrir_Archivo.close();
             JOptionPane.showMessageDialog(null, "Datos Guardados");
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Ocurrio un error:\n" + ex);
         }
-    
+
     }
     private void Boton_SalirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Boton_SalirMouseClicked
         try {
@@ -283,39 +300,39 @@ public class AreaClientes extends javax.swing.JFrame {
     }//GEN-LAST:event_Boton_EliminarActionPerformed
 
     private void Box_NombreMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Box_NombreMouseClicked
-                try {
-                   Box_Nombre.setText(""); 
+        try {
+            Box_Nombre.setText("");
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Ocurrio un error:\n" + ex);
         }
     }//GEN-LAST:event_Box_NombreMouseClicked
 
     private void Box_DocumentoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Box_DocumentoMouseClicked
-                    try {
-                   Box_Documento.setText(""); 
+        try {
+            Box_Documento.setText("");
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Ocurrio un error:\n" + ex);
         }
     }//GEN-LAST:event_Box_DocumentoMouseClicked
 
     private void Box_TelefonoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Box_TelefonoMouseClicked
-                        try {
-                   Box_Telefono.setText(""); 
+        try {
+            Box_Telefono.setText("");
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Ocurrio un error:\n" + ex);
         }
     }//GEN-LAST:event_Box_TelefonoMouseClicked
 
     private void Box_CorreoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Box_CorreoMouseClicked
-                             try {
-                   Box_Correo.setText(""); 
+        try {
+            Box_Correo.setText("");
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Ocurrio un error:\n" + ex);
-        } 
+        }
     }//GEN-LAST:event_Box_CorreoMouseClicked
 
     private void Boton_CargarDatosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Boton_CargarDatosMouseClicked
-        
+
     }//GEN-LAST:event_Boton_CargarDatosMouseClicked
 
     private void Boton_CargarDatosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Boton_CargarDatosActionPerformed
@@ -326,7 +343,6 @@ public class AreaClientes extends javax.swing.JFrame {
         Guardar();
     }//GEN-LAST:event_Boton_GuardarActionPerformed
 
-   
     /**
      * @param args the command line arguments
      */

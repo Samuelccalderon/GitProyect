@@ -16,9 +16,32 @@ public class Facturacion_Internet extends javax.swing.JFrame {
         TablaModelo.setColumnIdentifiers(Apartado);
         jTable1.setModel(TablaModelo);
     }
-    void Agregar(){
-        TablaModelo.addRow(new Object[]{Caja_Nombre.getText(),Caja_Documento.getText(),"Pago",Cantidad_Ropa.getText(),Precio_Ropa.getText(),Cantidad_Tenis.getText(),Precio_Tenis.getText(),Cantidad_Suministros.getText(),Precio_Suministros.getText(),"total"});
+
+ public static boolean esNumero(String cadena) {
+        try {
+            Integer.parseInt(cadena);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
+    void Agregar() {
+        try {
+            if (Integer.valueOf(Cantidad_Ropa.getText()) < 0 || Integer.valueOf(Precio_Ropa.getText()) < 0 || Integer.valueOf(Cantidad_Tenis.getText()) < 0 || Integer.valueOf(Precio_Tenis.getText()) < 0 || Integer.valueOf(Cantidad_Suministros.getText()) < 0 || Integer.valueOf(Precio_Suministros.getText()) < 0 || Integer.valueOf(Caja_Documento.getText()) < 0) {
+                JOptionPane.showMessageDialog(null, "Ocurrio un error: Hay un numero negativo.\n");
+            } else {
+                TablaModelo.addRow(new Object[]{Caja_Nombre.getText(), Caja_Documento.getText(), "Pago", Cantidad_Ropa.getText(), Precio_Ropa.getText(), Cantidad_Tenis.getText(), Precio_Tenis.getText(), Cantidad_Suministros.getText(), Precio_Suministros.getText(), "total"});
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Ingresaste un dato incorrecto, por favor verifica los campos.");
+        }
+    }
+    
+    void Eliminar() {
+        int fila = jTable1.getSelectedRow();
+        TablaModelo.removeRow(fila);
+    }
+     
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -92,12 +115,32 @@ public class Facturacion_Internet extends javax.swing.JFrame {
         jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 310, 910, 160));
 
         Cantidad_Ropa.setText("0");
+        Cantidad_Ropa.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                Cantidad_RopaMouseClicked(evt);
+            }
+        });
         jPanel1.add(Cantidad_Ropa, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 80, 60, 30));
 
         Cantidad_Tenis.setText("0");
+        Cantidad_Tenis.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                Cantidad_TenisMouseClicked(evt);
+            }
+        });
+        Cantidad_Tenis.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Cantidad_TenisActionPerformed(evt);
+            }
+        });
         jPanel1.add(Cantidad_Tenis, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 110, 60, 30));
 
         Cantidad_Suministros.setText("0");
+        Cantidad_Suministros.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                Cantidad_SuministrosMouseClicked(evt);
+            }
+        });
         jPanel1.add(Cantidad_Suministros, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 140, 60, 30));
 
         Boton_CargarCompra.setText("Cargar Compra");
@@ -126,12 +169,32 @@ public class Facturacion_Internet extends javax.swing.JFrame {
         jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 60, 100, -1));
 
         Precio_Ropa.setText("0");
+        Precio_Ropa.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                Precio_RopaMouseClicked(evt);
+            }
+        });
+        Precio_Ropa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Precio_RopaActionPerformed(evt);
+            }
+        });
         jPanel1.add(Precio_Ropa, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 80, 100, 30));
 
         Precio_Tenis.setText("0");
+        Precio_Tenis.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                Precio_TenisMouseClicked(evt);
+            }
+        });
         jPanel1.add(Precio_Tenis, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 110, 100, 30));
 
         Precio_Suministros.setText("0");
+        Precio_Suministros.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                Precio_SuministrosMouseClicked(evt);
+            }
+        });
         jPanel1.add(Precio_Suministros, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 140, 100, 30));
 
         jLabel6.setText("NOMBRE");
@@ -141,6 +204,11 @@ public class Facturacion_Internet extends javax.swing.JFrame {
         jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 160, 130, 30));
 
         Boton_EliminarCompra.setText("Eliminar Compra");
+        Boton_EliminarCompra.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Boton_EliminarCompraActionPerformed(evt);
+            }
+        });
         jPanel1.add(Boton_EliminarCompra, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 230, 170, 40));
 
         buttonGroup1.add(RBoton_TarjetaCredito);
@@ -172,6 +240,7 @@ public class Facturacion_Internet extends javax.swing.JFrame {
     private void Boton_VolverMenuFacturacionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Boton_VolverMenuFacturacionMouseClicked
         try {
             Menu_Facturacion Menu_Facturacion = new Menu_Facturacion();
+            Menu_Facturacion.setLocationRelativeTo(null);
             Menu_Facturacion.setVisible(true);
             dispose();
         } catch (Exception ex) {
@@ -182,6 +251,44 @@ public class Facturacion_Internet extends javax.swing.JFrame {
     private void Boton_CargarCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Boton_CargarCompraActionPerformed
         Agregar();
     }//GEN-LAST:event_Boton_CargarCompraActionPerformed
+
+    private void Precio_RopaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Precio_RopaActionPerformed
+        
+    }//GEN-LAST:event_Precio_RopaActionPerformed
+
+    private void Cantidad_RopaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Cantidad_RopaMouseClicked
+        Cantidad_Ropa.setText("");
+    }//GEN-LAST:event_Cantidad_RopaMouseClicked
+
+    private void Cantidad_TenisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Cantidad_TenisActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_Cantidad_TenisActionPerformed
+
+    private void Cantidad_TenisMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Cantidad_TenisMouseClicked
+        Cantidad_Tenis.setText("");
+    }//GEN-LAST:event_Cantidad_TenisMouseClicked
+
+    private void Cantidad_SuministrosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Cantidad_SuministrosMouseClicked
+        Cantidad_Suministros.setText("");
+    }//GEN-LAST:event_Cantidad_SuministrosMouseClicked
+
+    private void Precio_RopaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Precio_RopaMouseClicked
+        Precio_Ropa.setText("");
+    }//GEN-LAST:event_Precio_RopaMouseClicked
+
+    private void Precio_TenisMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Precio_TenisMouseClicked
+        Precio_Tenis.setText("");
+    }//GEN-LAST:event_Precio_TenisMouseClicked
+
+    private void Precio_SuministrosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Precio_SuministrosMouseClicked
+        
+         Precio_Suministros.setText("");
+// TODO add your handling code here:
+    }//GEN-LAST:event_Precio_SuministrosMouseClicked
+
+    private void Boton_EliminarCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Boton_EliminarCompraActionPerformed
+        Eliminar();
+    }//GEN-LAST:event_Boton_EliminarCompraActionPerformed
 
     /**
      * @param args the command line arguments
